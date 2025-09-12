@@ -26,7 +26,11 @@ function Switch({ isActivated }) {
             underlayColor="#DDDDDD"
             onPress={() => setIsOn(!isOn)}
         >
-            <Animated.View style={[isDarkMode ? styles.SwitchToggle : styles.SwitchToggleDark, { left: translateX }]} />
+            <Animated.View style={[
+                isDarkMode ? styles.SwitchToggle : styles.SwitchToggleDark, 
+                isOn ? styles.ToggleOn : styles.ToggleOff,
+                { left: translateX }
+                ]} />
         </TouchableOpacity>
     )
 }
@@ -41,7 +45,6 @@ const styles = StyleSheet.create({
         elevation: 4, // for Android shadow
     },
     SwitchToggle: {
-        backgroundColor: '#1e1e1e', // More visible toggle
         width: 30,
         height: 30,
         borderRadius: 15,
@@ -49,6 +52,12 @@ const styles = StyleSheet.create({
         top: 5, // centers vertically inside 40px height
         left: 5, // initial position
         zIndex: 2,
+    },
+    ToggleOn: {
+        backgroundColor: '#1e1e1e', // More visible toggle
+    },
+    ToggleOff: {
+        backgroundColor: '#969696ff', // More visible toggle
     },
 
     //DarkMode Styles
