@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, ViewStyle, TouchableWithoutFeedback, TextInput } from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    ViewStyle,
+    TouchableWithoutFeedback,
+} from 'react-native';
 
 interface InfoTooltipProps {
     message: string;
@@ -32,6 +39,14 @@ function InfoTooltip({
         }
     };
 
+    const closeTooltip = () => {
+        if (onToggle) {
+            onToggle(false);
+        } else {
+            setInternalVisible(false);
+        }
+    };
+
     const getTooltipPosition = (): ViewStyle => {
         switch (position) {
             case 'top':
@@ -48,54 +63,76 @@ function InfoTooltip({
     };
 
     return (
-        <View style={[{ flex: 1, backgroundColor: '#ac6f6f1f'}]}>
+        <View style={{ position: "relative" }}>
             {isVisible && (
-                <TouchableWithoutFeedback onPress={toggleVisibility}>
-                    <View style={[StyleSheet.absoluteFill]} />
-                </TouchableWithoutFeedback>
+                <View style={StyleSheet.absoluteFill}>
+                    <TouchableWithoutFeedback onPress={closeTooltip}>
+                        <View style={styles.overlay} />
+                    </TouchableWithoutFeedback>
+                </View>
             )}
 
-            <View style={styles.wrapper}>
-                <TouchableOpacity
-                    style={[styles.iconContainer, { backgroundColor }]}
-                    activeOpacity={0.8}
-                    onPress={toggleVisibility}
-                >
-                    <Text style={styles.iconText}>i</Text>
-                </TouchableOpacity>
-
-                {isVisible && (
-                    <View style={[styles.tooltipBox, { backgroundColor: tooltipColor }, getTooltipPosition(), tooltipStyle]}>
-                        <Text style={styles.tooltipText}>{message}</Text>
+            {/* Botón info + tooltip */}
+            <TouchableOpacity
+                onPress={toggleVisibility}
+                activeOpacity={0.8}
+                hitSlop={{ top:5, bottom:5, left:5, right:5 }}
+                style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
+                <View style={styles.wrapper}>
+                    <View style={[styles.iconContainer, { backgroundColor }]}>
+                        <Text style={styles.iconText}>i</Text>
                     </View>
-                )}
-            </View>
+
+                    {isVisible && (
+                        <View
+                            style={[
+                                styles.tooltipBox,
+                                { backgroundColor: tooltipColor },
+                                getTooltipPosition(),
+                                tooltipStyle,
+                            ]}
+                        >
+                            <Text style={styles.tooltipText}>{message}</Text>
+                        </View>
+                    )}
+                </View>
+            </TouchableOpacity>
         </View>
     );
+
 }
 
 export default InfoTooltip;
 
 const styles = StyleSheet.create({
+    overlay: {
+        ...StyleSheet.absoluteFillObject,
+        pointerEvents: 'box-none',
+    },
     wrapper: {
-        position: 'relative',
-        width: 20,
-        height: 20
+        width: '100%',
     },
     iconContainer: {
         borderRadius: 10,
-        paddingInline: 8,
+        width: 20,
+        height: 20,
+        justifyContent: 'center',
+        alignContent: 'center',
     },
     iconText: {
         color: '#fff',
         fontWeight: 'bold',
+        textAlign: 'center',
     },
     tooltipBox: {
         position: 'absolute',
         padding: 8,
         borderRadius: 6,
         width: 200,
-        zIndex: 10,
     },
     tooltipText: {
         color: '#000',

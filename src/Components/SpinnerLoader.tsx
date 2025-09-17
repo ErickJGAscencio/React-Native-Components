@@ -1,7 +1,11 @@
 import React, { useEffect, useRef } from "react";
-import { StyleSheet, View, Animated } from "react-native";
+import { StyleSheet, Animated } from "react-native";
 
-function SpinnerLoader({ backgroundColor = '#fff', slideColor }) {
+interface SpinnerLoaderProps{
+    backgroundColor?: string;
+    slideColor?: string;
+}
+function SpinnerLoader({ backgroundColor = '#fff', slideColor } : SpinnerLoaderProps) {
     const animatedRotation = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
@@ -15,7 +19,7 @@ function SpinnerLoader({ backgroundColor = '#fff', slideColor }) {
     }, []);
 
     const rotationInterpolate = animatedRotation.interpolate({
-        inputRange: [0, 360], // ← esto debe coincidir con toValue
+        inputRange: [0, 360], // Esto debe coincidir con toValue
         outputRange: ['0deg', '360deg'],
     });
 
@@ -30,7 +34,6 @@ function SpinnerLoader({ backgroundColor = '#fff', slideColor }) {
                 }
             ]}
         />
-
     )
 }
 

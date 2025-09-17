@@ -29,7 +29,6 @@ function ButtonCustom({ buttonWidth, buttonColor = '#5e9ef2', textColor = '#000'
     const handleOnPress = () => {
         if (onPress) {
             onPress();
-
         }
     }
     return (
@@ -44,6 +43,8 @@ function ButtonCustom({ buttonWidth, buttonColor = '#5e9ef2', textColor = '#000'
                 width: buttonWidth ? buttonWidth : 'auto',
                 elevation: 4,
                 transform: [{ scale: scaleAnim }],
+                justifyContent:'center',
+                alignContent:'center'
             }
             ]}>
 

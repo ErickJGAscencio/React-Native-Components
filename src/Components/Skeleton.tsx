@@ -1,15 +1,15 @@
 import React, { useEffect, useRef } from "react";
-import { View, Animated, ViewStyle, StyleSheet } from "react-native";
+import { Animated, ViewStyle, StyleSheet } from "react-native";
 
 interface SkeletonProps {
-  width?: number | string;
-  height?: number | string;
+  width?: number ;
+  height?: number ;
   borderRadius?: number;
   style?: ViewStyle;
 }
 
 function Skeleton({
-  width = "100%",
+  width = 100,
   height = 100,
   borderRadius = 10,
   style,
@@ -21,12 +21,12 @@ function Skeleton({
       Animated.sequence([
         Animated.timing(shimmer, {
           toValue: 1,
-          duration: 1200,
+          duration: 800,
           useNativeDriver: true,
         }),
         Animated.timing(shimmer, {
           toValue: 0,
-          duration: 1200,
+          duration: 800,
           useNativeDriver: true,
         }),
       ])
@@ -36,7 +36,7 @@ function Skeleton({
   // Interpolar opacidad para efecto "fade in / fade out"
   const opacity = shimmer.interpolate({
     inputRange: [0, 1],
-    outputRange: [0.4, 1],
+    outputRange: [0.1, 1],
   });
 
   return (
@@ -44,10 +44,10 @@ function Skeleton({
       style={[
         styles.skeleton,
         {
-          width:'100%',
-          height:100,
-          borderRadius:10,
-          opacity:0.8,
+          width: `${width}%`,
+          height: height,
+          borderRadius:borderRadius,
+          opacity,
         },
         style,
       ]}

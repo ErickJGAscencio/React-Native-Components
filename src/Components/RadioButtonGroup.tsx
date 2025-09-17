@@ -1,12 +1,13 @@
-import React, { JSX, useEffect, useState } from "react";
+import React, { JSX, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 interface RadioButtonGroupProps {
   options: string[];
+  color?: string;
   onSelect?: (selected: string) => void;
 }
 
-function RadioButtonGroup({ options, onSelect }: RadioButtonGroupProps): JSX.Element {
+function RadioButtonGroup({ options, color = '#6a94e2ff', onSelect }: RadioButtonGroupProps): JSX.Element {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
   const handleSelect = (option: string) => {
@@ -25,8 +26,8 @@ function RadioButtonGroup({ options, onSelect }: RadioButtonGroupProps): JSX.Ele
           onPress={() => handleSelect(option)}
           activeOpacity={0.8}
         >
-          <View style={styles.radioCircle}>
-            {selectedOption === option && <View style={styles.selectedDot} />}
+          <View style={[styles.radioCircle, { borderColor: color }]}>
+            {selectedOption === option && <View style={[styles.selectedDot, { backgroundColor: color }]} />}
           </View>
           <Text style={styles.optionText}>{option}</Text>
         </TouchableOpacity>

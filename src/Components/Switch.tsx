@@ -1,7 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, TouchableOpacity, Animated, useColorScheme, Text } from "react-native";
 
-function Switch({ isActivated }) {
+interface SwitchProps {
+    isActivated: boolean;
+    onToggle?: (newState: boolean) => void;
+}
+
+function Switch({ isActivated, onToggle }: SwitchProps) {
     const isDarkMode = useColorScheme() === 'dark';
     const [isOn, setIsOn] = useState(isActivated);
     const toggleAnim = useRef(new Animated.Value(isActivated ? 1 : 0)).current;
@@ -14,6 +19,8 @@ function Switch({ isActivated }) {
         }).start();
     }, [isOn]);
 
+
+
     const translateX = toggleAnim.interpolate({
         inputRange: [0, 1],
         outputRange: [5, 40],// left position for off/on
@@ -23,14 +30,18 @@ function Switch({ isActivated }) {
         <TouchableOpacity
             style={isDarkMode ? styles.SwitchContainer : styles.SwitchContainerDark}
             activeOpacity={0.8}
-            underlayColor="#DDDDDD"
-            onPress={() => setIsOn(!isOn)}
+            onPress={() => {
+                const newState = !isOn;
+                setIsOn(newState);
+                onToggle?.(newState);
+            }}
+
         >
             <Animated.View style={[
-                isDarkMode ? styles.SwitchToggle : styles.SwitchToggleDark, 
+                isDarkMode ? styles.SwitchToggle : styles.SwitchToggleDark,
                 isOn ? styles.ToggleOn : styles.ToggleOff,
                 { left: translateX }
-                ]} />
+            ]} />
         </TouchableOpacity>
     )
 }

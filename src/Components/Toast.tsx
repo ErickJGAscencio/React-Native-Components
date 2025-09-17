@@ -33,11 +33,16 @@ function Toast({ message = 'Texto del Toast', duration = 3000, visible = false, 
     }, [visible]);
 
     return (
-        <Animated.View style={[styles.toastContainer,
-        {
-            backgroundColor: toastColor,
-            opacity: fadeAnim
-        }]}>
+        <Animated.View
+            style={[
+                styles.toastContainer,
+                {
+                    backgroundColor: toastColor,
+                    opacity: fadeAnim,
+                },
+            ]}
+            pointerEvents={visible ? "auto" : "none"}
+        >
             <Text style={[styles.toastText, {
                 color: textColor
             }]}>
