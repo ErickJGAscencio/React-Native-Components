@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { ScrollView, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
 import Switch from './Components/Switch';
 import ProgressBar from './Components/ProgressBar';
 import CirucularProgressBar from './Components/SpinnerLoader';
@@ -13,12 +14,24 @@ import RadioButtonGroup from "./Components/RadioButtonGroup";
 import Skeleton from "./Components/Skeleton";
 import Chip from "./Components/Chip";
 import Carousel from "./Components/Carousel";
+import OnboardingTour from "./Components/OnboardingTour";
 
 function ExampleView() {
     const [text, setText] = useState("");
     const [showToast, setShowToast] = useState(false);
-    const [showSkeleton, setShowSkeleton] = useState(false);
-    const [showModal, setShowModal] = useState(false);
+
+    const [isTutorialFInished, setIsTutorioalFinished] = useState(false);
+
+    const carouselRef = useRef(null);
+    const switchRef = useRef(null);
+    const progressBarRef = useRef(null);
+    const inputRef = useRef(null);
+    const buttonRef = useRef(null);
+    const stepperRef = useRef(null);
+    const tooltipRef = useRef(null);
+    const radiobuttonG = useRef(null);
+    const skeletonRef = useRef(null);
+    const chipRef = useRef(null);
 
     const imgsRoutes = [
         'https://2.bp.blogspot.com/-_VS7i7Jnp-s/UcBdeNBKCqI/AAAAAAAB0W0/n6AlrQeZdwg/s1600/Amanecer-en-Alaska.jpg',
@@ -48,31 +61,74 @@ function ExampleView() {
 
     return (
         <SafeAreaView style={{ flex: 1, display: 'flex', justifyContent: 'space-between', width: '100%', paddingInline: 10 }}>
-            <ScrollView contentContainerStyle={{ padding: 16 }}>
 
 
-                <View style={{ flexDirection: 'row', width: '100%' }}>
-                    <Carousel 
-                        imagesRoutes={imgsRoutes} 
+            <ScrollView contentContainerStyle={{ padding: 16 }} scrollEnabled={isTutorialFInished}>
+
+                {!isTutorialFInished &&
+
+                    <OnboardingTour
+                        steps={[
+                            {
+                                title: "Carrusel",
+                                description: "Este carrusel muestra imágenes automáticamente.",
+                                targetRef: carouselRef,
+                            },
+                            {
+                                title: "Interruptor",
+                                description: "Activa o desactiva opciones con este switch.",
+                                targetRef: switchRef,
+                            },
+                            {
+                                title: "Barra de Progreso",
+                                description: "Aquí se muestra el progreso de tus tareas.",
+                                targetRef: progressBarRef,
+                            },
+                            {
+                                title: "Campo de Texto",
+                                description: "Escribe aquí para ingresar información.",
+                                targetRef: inputRef,
+                            },
+                            {
+                                title: "Botón Personalizado",
+                                description: "Presiona este botón para ejecutar una acción.",
+                                targetRef: buttonRef,
+                            },
+                        ]}
+                        onFinish={() => setIsTutorioalFinished(true)}
+                    />
+                }
+
+                <View ref={carouselRef}>
+                    <Carousel
+                        imagesRoutes={imgsRoutes}
                         autoScroll={true}
                         scrollInterval={5500}
                     />
                 </View>
 
-                <View
-                    style={{ justifyContent: 'center', alignContent: 'center', alignItems: 'center' }}>
+                <Carousel
+                    imagesRoutes={imgsRoutes}
+                    autoScroll={true}
+                    scrollInterval={5500}
+                    buttonControllerEnabled={false}
+                />
+                
+                    <View ref={switchRef} style={{width:'auto'}}>
+                        {
+                            data.map((item, index) => (
+                                <Switch
+                                    key={index}
+                                    isActivated={item.status}
+                                    onToggle={(value) => console.log("El switch está en:", value)}
+                                />
 
-                    {
-                        data.map((item, index) => (
-                            <Switch
-                                key={index}
-                                isActivated={item.status}
-                                onToggle={(value) => console.log("El switch está en:", value)}
-                            />
-
-                        ))
-                    }
-                    <ProgressBar progressPorcent={28} />
+                            ))
+                        }
+                    </View>
+                    <View ref={progressBarRef}>
+                        <ProgressBar progressPorcent={28} />
+                    </View>
                     <ProgressBar progressPorcent={78} />
 
                     <View style={{ display: 'flex', flexDirection: 'row' }}>
@@ -81,18 +137,24 @@ function ExampleView() {
                         <CirucularProgressBar slideColor={'#6e8ef8ff'} backgroundColor={"transparent"} />
                     </View>
 
-                    <TextInputCustom
-                        isLimited={true}
-                        maxLength={10} //Limit text
-                        onTextChange={(value) => setText(value)}  //Returning the text
-                    />
+                    <View ref={inputRef}>
+                        <TextInputCustom
+                            isLimited={true}
+                            maxLength={10} //Limit text
+                            onTextChange={(value) => setText(value)}  //Returning the text
+                        />
+                    </View>
                     <TextInputCustom
                         onTextChange={(value) => setText(value)}  //Returning the text
                     />
 
-                    <ButtonCustom
-                        textButton="Atención"
-                    />
+                    <View
+                        ref={buttonRef}
+                    >
+                        <ButtonCustom
+                            textButton="Atención"
+                        />
+                    </View>
                     <ButtonCustom
                         buttonColor={'#64cb4fff'}
                         textColor={'#fff'}
@@ -112,15 +174,19 @@ function ExampleView() {
                     />
 
                     <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingInline: 10 }}>
-                        <Stepper />
+                        <View ref={stepperRef}>
+                            <Stepper />
+                        </View>
                         <Stepper initalValue={990} />
                     </View>
+                    <View ref={tooltipRef}>
 
-                    <InfoTooltip
-                        message="Este campo es obligatorio"
-                        backgroundColor="#ff9900"
-                        tooltipColor="#fffbe6"
-                    />
+                        <InfoTooltip
+                            message="Este campo es obligatorio"
+                            backgroundColor="#ff9900"
+                            tooltipColor="#fffbe6"
+                        />
+                    </View>
                     <InfoTooltip
                         message="Esta es la información que se da para algún campo."
                         tooltipColor="#fffbe6"
@@ -134,11 +200,13 @@ function ExampleView() {
                     />
 
                     <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: 10 }}>
-                        <RadioButtonGroup options={['Opción 1', 'Opción 2', 'Opción 3']} onSelect={value => console.log(value)} />
+                        <View ref={radiobuttonG}>
+                            <RadioButtonGroup options={['Opción 1', 'Opción 2', 'Opción 3']} onSelect={value => console.log(value)} />
+                        </View>
                         <RadioButtonGroup options={['Opción 1', 'Opción 2', 'Opción 3']} color="#be2faeff" onSelect={value => console.log(value)} />
                     </View>
 
-                    <View style={{ flex: 1, width: '100%', flexDirection: 'column', gap: 10 }}>
+                    <View ref={skeletonRef} style={{ flex: 1, width: '100%', flexDirection: 'column', gap: 10 }}>
                         <Skeleton />
                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: 10 }}>
                             <Skeleton width={48} />
@@ -152,14 +220,16 @@ function ExampleView() {
                         </View>
                     </View>
 
-                    <View style={{ flexDirection: 'row', width: '100%', marginTop: 20, justifyContent: 'space-evenly' }}>
+                    <View ref={chipRef} style={{ flexDirection: 'row', width: '100%', marginTop: 20, justifyContent: 'space-evenly' }}>
                         <Chip chipTitle="Vehiculos" onRemove={() => ("")} />
                         <Chip chipTitle="Animales" />
                         <Chip chipTitle="Grande" />
                         <Chip chipTitle="Usado" onRemove={() => ("")} />
                     </View>
-                </View>
+
             </ScrollView>
+
+
             <Toast message={text} visible={showToast} />
             {/* <Toast message={text} visible={showToast} toastColor="#dfdfdfff" textColor="#1e1e1e" /> */}
         </SafeAreaView>
